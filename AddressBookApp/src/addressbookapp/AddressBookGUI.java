@@ -25,10 +25,10 @@ public class AddressBookGUI extends javax.swing.JFrame {
      * Creates new form AddressBookGUI
      */
     //variables
-    protected String fName, sName, email, phone, address;
+    protected String fName, sName, email, phone, address, type, companyName;
     
-    //Declare our ArrayList
-    ArrayList<AddressBook> contacts = new ArrayList<AddressBook>();
+    //Create & Declare the ArrayList
+    ArrayList<AddressBook> contacts = new ArrayList<AddressBook>(); //With the AddressBook Object
     
     //I/O Stream
     //save method
@@ -60,7 +60,7 @@ public class AddressBookGUI extends javax.swing.JFrame {
             ois = new ObjectInputStream(fis);
             
             contacts = (ArrayList<AddressBook>)ois.readObject(); //cast it to User obj in ArrayList
-            ois.close();
+            ois.close(); //close
             displayTA.append("");
         }catch(IOException | ClassNotFoundException e){
             System.out.println("Loading file error " +e);
@@ -99,6 +99,10 @@ public class AddressBookGUI extends javax.swing.JFrame {
         displayBTN = new javax.swing.JButton();
         searchBTN = new javax.swing.JButton();
         deleteBTN = new javax.swing.JButton();
+        typeLBL = new javax.swing.JLabel();
+        typeTF = new javax.swing.JTextField();
+        companyNameLBL = new javax.swing.JLabel();
+        companyNameTF = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -140,31 +144,35 @@ public class AddressBookGUI extends javax.swing.JFrame {
         deleteBTN.setText("Delete");
         deleteBTN.addActionListener(this::deleteBTNActionPerformed);
 
+        typeLBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        typeLBL.setText("Type of Contact:");
+
+        companyNameLBL.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        companyNameLBL.setText("Company Name:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(fNameLBL)
-                            .addComponent(sNameLBL))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(phoneLBL)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(sNameLBL)
+                                .addComponent(emailLBL)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(fNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(phoneTF, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(emailTF, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(sNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(phoneLBL)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(phoneTF))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(emailLBL)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(emailTF, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(companyNameLBL)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(companyNameTF)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(92, 92, 92))
             .addGroup(layout.createSequentialGroup()
@@ -173,11 +181,6 @@ public class AddressBookGUI extends javax.swing.JFrame {
                         .addGap(230, 230, 230)
                         .addComponent(titleLBL))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(addressLBL)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addressTF, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(36, 36, 36)
                         .addComponent(addBTN)
                         .addGap(53, 53, 53)
@@ -185,37 +188,62 @@ public class AddressBookGUI extends javax.swing.JFrame {
                         .addGap(59, 59, 59)
                         .addComponent(searchBTN)
                         .addGap(56, 56, 56)
-                        .addComponent(deleteBTN)))
+                        .addComponent(deleteBTN))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(fNameLBL)
+                        .addGap(41, 41, 41)
+                        .addComponent(fNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(addressLBL)
+                        .addGap(39, 39, 39)
+                        .addComponent(addressTF, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(typeLBL)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(typeTF, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(titleLBL)
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(fNameLBL)
-                            .addComponent(fNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
+                            .addComponent(fNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fNameLBL))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(companyNameLBL)
+                            .addComponent(companyNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(sNameLBL)
                             .addComponent(sNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(24, 24, 24)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(emailLBL)
                             .addComponent(emailTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(27, 27, 27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(phoneLBL)
-                            .addComponent(phoneTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
+                            .addComponent(phoneTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(phoneLBL))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addressLBL)
-                    .addComponent(addressTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                    .addComponent(typeLBL)
+                    .addComponent(typeTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addressTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addressLBL))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addBTN)
                     .addComponent(displayBTN)
@@ -229,20 +257,40 @@ public class AddressBookGUI extends javax.swing.JFrame {
 
     private void addBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBTNActionPerformed
         // TODO add your handling code here:
-         fName = fNameTF.getText();
+        //Get the text
+        fName = fNameTF.getText();
+        companyName = companyNameTF.getText();
         sName = sNameTF.getText();
         email = emailTF.getText();
         phone = phoneTF.getText();
+        type = typeTF.getText();
         address = addressTF.getText();
         
         boolean exists = false;
         
-        // Check for empty fields
-        if (fName.isEmpty() || sName.isEmpty() || phone.isEmpty()) {
-            JOptionPane.showMessageDialog(null,"Please enter a first name, a last name and a phone number");
+        //Check type first
+        if (type.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a contact type");
             return;
         }
-
+        
+        //Business validation
+        if (type.equalsIgnoreCase("business")) {
+            if (companyName.isEmpty() || phone.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "Please enter a company name and phone number");
+                return;
+            }
+        } //Normal validation
+        else {
+            if (fName.isEmpty() || sName.isEmpty() || phone.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "Please enter a first name, surname and phone number");
+                return;
+            }
+        }
+        
+     //For Each Loop
     for (AddressBook con : contacts) {
         if (con.getfName().equals(fName)
             && con.getsName().equals(sName)
@@ -253,28 +301,39 @@ public class AddressBookGUI extends javax.swing.JFrame {
             break;
         }
     }
-
+    
+    //Add from the BusinessContacts
     if (exists) {
     JOptionPane.showMessageDialog(null, "That contact already exists in your phone book");
-    } else {
-    AddressBook tempS = new AddressBook(fName,sName,email,phone,address);
-    contacts.add(tempS);
-    JOptionPane.showMessageDialog(null, "Contact added!");
+    } else if(type.equalsIgnoreCase("business")) {
+        BusinessContacts tempU = new BusinessContacts(fName,sName,email,phone,address,companyName, type);
+        contacts.add(tempU);
+        JOptionPane.showMessageDialog(null, "Business Contact added!");
+    }else {
+        AddressBook tempS = new AddressBook(fName,sName,email,phone,address);
+        contacts.add(tempS);
+        JOptionPane.showMessageDialog(null, "Contact added!"); 
     }
     
+    //Save it
     save();
     
+    //Clear the TFs
     fNameTF.setText("");
+    companyNameTF.setText("");
     sNameTF.setText("");
     emailTF.setText("");
     phoneTF.setText("");
+    typeTF.setText("");
     addressTF.setText("");
 
     }//GEN-LAST:event_addBTNActionPerformed
 
     private void displayBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_displayBTNActionPerformed
         // TODO add your handling code here:
+        //Get the text
         fName = fNameTF.getText();
+        companyName = companyNameTF.getText();
         sName = sNameTF.getText();
         email = emailTF.getText();
         phone = phoneTF.getText();
@@ -293,10 +352,13 @@ public class AddressBookGUI extends javax.swing.JFrame {
 
     private void searchBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBTNActionPerformed
         // TODO add your handling code here:
+        //Get the text
         fName = fNameTF.getText();
+        companyName = companyNameTF.getText();
         sName = sNameTF.getText();
         email = emailTF.getText();
         phone = phoneTF.getText();
+        type = typeTF.getText();
         address = addressTF.getText();
         
         //Make sure at least one field is filled in
@@ -305,19 +367,25 @@ public class AddressBookGUI extends javax.swing.JFrame {
         }
         
         //If Statement
+        boolean found = false;
         for (AddressBook con : contacts) {
             if (con.getPhone().equals(phone)) {
                 displayTA.setText(con.toString());
-                return;
+                found = true;
+                break;
             }
         }
 
-        displayTA.setText("No matching contact found");
+        if(!found) {
+            displayTA.setText("No matching contact found");
+        }
         
         fNameTF.setText("");
+        companyNameTF.setText("");
         sNameTF.setText("");
         emailTF.setText("");
         phoneTF.setText("");
+        typeTF.setText("");
         addressTF.setText("");
 
     }//GEN-LAST:event_searchBTNActionPerformed
@@ -325,9 +393,11 @@ public class AddressBookGUI extends javax.swing.JFrame {
     private void deleteBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBTNActionPerformed
         // TODO add your handling code here:
         fName = fNameTF.getText();
+        companyName = companyNameTF.getText();
         sName = sNameTF.getText();
         email = emailTF.getText();
         phone = phoneTF.getText().trim();
+        type = typeTF.getText();
         address = addressTF.getText();
         
         //Make sure every field is filled in
@@ -359,6 +429,7 @@ public class AddressBookGUI extends javax.swing.JFrame {
         sNameTF.setText("");
         emailTF.setText("");
         phoneTF.setText("");
+        typeTF.setText("");
         addressTF.setText("");
 
     }//GEN-LAST:event_deleteBTNActionPerformed
@@ -392,6 +463,8 @@ public class AddressBookGUI extends javax.swing.JFrame {
     private javax.swing.JButton addBTN;
     private javax.swing.JLabel addressLBL;
     private javax.swing.JTextField addressTF;
+    private javax.swing.JLabel companyNameLBL;
+    private javax.swing.JTextField companyNameTF;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JButton displayBTN;
     private javax.swing.JTextArea displayTA;
@@ -406,5 +479,7 @@ public class AddressBookGUI extends javax.swing.JFrame {
     private javax.swing.JTextField sNameTF;
     private javax.swing.JButton searchBTN;
     private javax.swing.JLabel titleLBL;
+    private javax.swing.JLabel typeLBL;
+    private javax.swing.JTextField typeTF;
     // End of variables declaration//GEN-END:variables
 }
